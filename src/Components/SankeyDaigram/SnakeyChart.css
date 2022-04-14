@@ -1,0 +1,30 @@
+.tablePi tr{
+    padding-top: 10px;
+}
+table {
+  border-collapse: collapse;
+}
+
+th {
+  background-color: gray;
+  Color: white;
+}
+
+th,
+td {
+  width: 150px;
+  text-align: left;
+  border: 1px solid black;
+  padding: 5px
+}
+button {
+  background-color: #4CAF50;
+  /* Green */
+  border: none;
+  color: white;
+  padding: 5px 12px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+}
