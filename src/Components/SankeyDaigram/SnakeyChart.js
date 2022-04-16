@@ -46,7 +46,7 @@ const SankeyChart = (props) => {
       setNames(t);
       setInsource([...new Set(u)]);
     }
-  }, [tabelData, name, insource]);
+  }, [tabelData, name, income]);
 
   //Add new entry
   const addParam = () => {
