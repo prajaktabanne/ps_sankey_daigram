@@ -34,19 +34,24 @@ const SankeyChart = (props) => {
 
   const [tabelData, setTabelDdata] = useState(store.getState().data);
   const [names, setNames] = useState([]);
+  const [insource, setInsource] = useState([]);
+  const [income, setIncome] = useState("");
+  const [addFor, setAddFor] = useState("");
 
   /**update dropdown list as per table data update */
   useEffect(() => {
     if (tabelData.length > 1) {
       var t = tabelData.map((x) => x[1]);
+      var u = tabelData.map((x) => x[0]);
       setNames(t);
+      setInsource([...new Set(u)]);
     }
-  }, [tabelData, name]);
+  }, [tabelData, name, insource]);
 
   //Add new entry
   const addParam = () => {
     if (name !== "" && addAmount !== "") {
-      var t = [name, parseInt(addAmount)];
+      var t = [addFor, name, parseInt(addAmount)];
       setName("");
       setAddAmount(undefined);
       store.dispatch({ type: "saveData", t });
@@ -90,29 +95,62 @@ const SankeyChart = (props) => {
   const selectName = (e) => {
     setSelectedName(e.target.value);
   };
-
+  const handleIncome = (e) => {
+    setIncome(e.target.value);
+  };
+  const addIncome = () => {
+    store.dispatch({
+      type: "addIncome",
+      t: [income.toString(), `saving_${insource.length}`, income],
+    });
+    setTabelDdata(store.getState().data.data);
+  };
+  const selectIncome = (event) => {
+    setAddFor(event.target.value);
+  };
   return (
     <div className="container mt-5">
       <table className="tablePi">
         <tbody>
           <tr>
+            <th>{t("addin")}</th>
             <th>{t("add")}</th>
             <th>{t("edit")}</th>
             <th>{t("delete")}</th>
           </tr>
           <tr>
             <td>
-              <tr>
-                <label>{t("name")}</label>
-                <input
-                  type="text"
-                  value={name}
-                  onChange={(e) => {
-                    handleNameChange(e);
-                  }}
-                />
-              </tr>
-              <tr>
+              <label>{t("addin")}</label>
+              <input type="text" onChange={(e) => handleIncome(e)} />
+              <button onClick={() => addIncome()}>{t("addin")}</button>
+            </td>
+            <td>
+              <label>{t("name")}</label>
+              <select
+                onChange={(e) => {
+                  selectIncome(e);
+                }}
+              >
+                {insource.map((e, key) => {
+                  return (
+                    key !== 0 && (
+                      <option key={key} value={e}>
+                        {e}
+                      </option>
+                    )
+                  );
+                })}
+              </select>
+              <label>{t("name")}</label>
+              <input
+                type="text"
+                value={name}
+                onChange={(e) => {
+                  handleNameChange(e);
+                }}
+              />
+
+              <td>
                 <label>{t("amount")}</label>
                 <input
                   type="text"
@@ -121,12 +159,12 @@ const SankeyChart = (props) => {
                     handleAddAmountChange(e);
                   }}
                 />{" "}
-              </tr>
-              <tr>
+              </td>
+              <td>
                 <button id="addP" onClick={() => addParam()}>
                   {t("add")}
                 </button>
-              </tr>
+              </td>
             </td>
             <td>
               <tr>
@@ -148,13 +186,15 @@ const SankeyChart = (props) => {
                 </select>
               </tr>
               <tr>
-                <label>{t("amount")}</label>
-                <input
-                  type="text"
-                  onChange={(e) => {
-                    handleEditAmountChange(e);
-                  }}
-                />{" "}
+                <td>
+                  <label>{t("amount")}</label>
+                  <input
+                    type="text"
+                    onChange={(e) => {
+                      handleEditAmountChange(e);
+                    }}
+                  />{" "}
+                </td>
               </tr>
               <tr>
                 <button onClick={() => editEntry()}>{t("edit")}</button>
@@ -162,22 +202,24 @@ const SankeyChart = (props) => {
             </td>
             <td>
               <tr>
-                <label>{t("name")}</label>
-                <select
-                  onChange={(e) => {
-                    selectName(e);
-                  }}
-                >
-                  {names.map((e, key) => {
-                    return (
-                      key !== 0 && (
-                        <option key={key} value={e}>
-                          {e}
-                        </option>
-                      )
-                    );
-                  })}
-                </select>
+                <td>
+                  <label>{t("name")}</label>
+                  <select
+                    onChange={(e) => {
+                      selectName(e);
+                    }}
+                  >
+                    {names.map((e, key) => {
+                      return (
+                        key !== 0 && (
+                          <option key={key} value={e}>
+                            {e}
+                          </option>
+                        )
+                      );
+                    })}
+                  </select>
+                </td>
               </tr>
               <tr>
                 <button
@@ -193,14 +235,16 @@ const SankeyChart = (props) => {
         </tbody>
       </table>
       <h2>Sankey Chart</h2>
-      <Chart
-        width={700}
-        height={"350px"}
-        chartType="Sankey"
-        loader={<div>{t("loading")}</div>}
-        data={tabelData}
-        rootProps={{ "data-testid": "1" }}
-      />
+      <div className="chart">
+        <Chart
+          width={700}
+          height={"350px"}
+          chartType="Sankey"
+          loader={<div>{t("loading")}</div>}
+          data={tabelData}
+          rootProps={{ "data-testid": "1" }}
+        />
+      </div>
     </div>
   );
 };

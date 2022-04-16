@@ -28,3 +28,6 @@ button {
   display: inline-block;
   font-size: 16px;
 }
+.chart{
+  overflow-y: scroll;
+}

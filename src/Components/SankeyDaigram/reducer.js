@@ -6,9 +6,9 @@ export const countReducer = function (state = initialState, action) {
   switch (action.type) {
     case "saveData":
       state.data.data[state.data.data.length] = [
-        "5000",
         action.t[0],
-        parseInt(action.t[1]),
+        action.t[1],
+        parseInt(action.t[2]),
       ];
       return {
         ...state,
@@ -27,6 +27,9 @@ export const countReducer = function (state = initialState, action) {
       };
     case "getData":
       state.data = action.myJson;
+      return { ...state };
+    case "addIncome":
+      state.data.data[state.data.data.length] = action.t;
       return { ...state };
     default:
       return state;
